@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['balance_amount'] = $_SESSION['total_amount'] - $_SESSION['expenditure_value'];
 
             $_SESSION['expenses'][$index] = ['title' => $expenseTitle, 'amount' => $expenseAmount];
+            $editIndex = null; // Close the edit form
         }
     } elseif (isset($_POST['delete_expense'])) {
         $index = $_POST['index'];
@@ -53,31 +54,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             array_splice($_SESSION['expenses'], $index, 1);
         }
+    } elseif (isset($_POST['edit_index'])) {
+        $editIndex = $_POST['edit_index'];
     }
 }
+
+// Determine which expense (if any) to edit
+$editingExpense = isset($editIndex) ? $_SESSION['expenses'][$editIndex] : null;
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <title>Budget App | PHP Version</title>
 </head>
-
 <body>
-
 <div class="wrapper">
     <div class="container">
         <div class="sub-container">
             <div class="total-amount-container">
                 <h3>Budget</h3>
                 <?php if (isset($budgetError)): ?>
-                    <p class="error"><?php echo $budgetError; ?></p>
+                    <p class="error"><?php echo htmlspecialchars($budgetError); ?></p>
                 <?php endif; ?>
                 <form method="post" action="">
                     <input type="number" name="total_amount" placeholder="Enter Total Amount" required>
@@ -88,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="user-amount-container">
                 <h3>Expenses</h3>
                 <?php if (isset($expenseError)): ?>
-                    <p class="error"><?php echo $expenseError; ?></p>
+                    <p class="error"><?php echo htmlspecialchars($expenseError); ?></p>
                 <?php endif; ?>
                 <form method="post" action="">
                     <input type="text" name="expense_title" placeholder="Enter Title Of Product" required>
@@ -101,21 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="output-container flex-space">
             <div>
                 <p>Total Budget</p>
-                <span id="amount">
-                    <?php echo $_SESSION['total_amount']; ?>
-                </span>
+                <span id="amount"><?php echo htmlspecialchars($_SESSION['total_amount']); ?></span>
             </div>
             <div>
                 <p>Expenses</p>
-                <span id="expenditure-value">
-                    <?php echo $_SESSION['expenditure_value']; ?>
-                </span>
+                <span id="expenditure-value"><?php echo htmlspecialchars($_SESSION['expenditure_value']); ?></span>
             </div>
             <div>
                 <p>Balance</p>
-                <span id="balance-amount">
-                    <?php echo $_SESSION['balance_amount']; ?>
-                </span>
+                <span id="balance-amount"><?php echo htmlspecialchars($_SESSION['balance_amount']); ?></span>
             </div>
         </div>
     </div>
@@ -127,10 +123,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="sublist-content flex-space">
                     <p class="product"><?php echo htmlspecialchars($expense['title']); ?></p>
                     <p class="amount"><?php echo htmlspecialchars($expense['amount']); ?></p>
-                    <button class="edit" onclick="editExpense(<?php echo $index; ?>)"><i class="fa fa-edit"></i></button>
                     <form method="post" action="" style="display:inline;">
                         <input type="hidden" name="index" value="<?php echo $index; ?>">
-                        <button class="delete" type="submit" name="delete_expense"><i class="fa fa-trash"></i></button>
+                        <button class="delete" type="submit" name="delete_expense">Delete</button>
+                    </form>
+                    <form method="post" action="" style="display:inline;">
+                        <input type="hidden" name="edit_index" value="<?php echo $index; ?>">
+                        <button class="edit" type="submit">Edit</button>
                     </form>
                 </div>
             <?php endforeach; ?>
@@ -138,39 +137,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<!-- Edit Expense Form (Hidden by default) -->
-<div id="editExpenseForm" class="edit-form">
-    <h3>Edit Expense</h3>
-    <form method="post" action="">
-        <input type="hidden" name="index" id="editIndex">
-        <input type="text" name="expense_title" id="editTitle" placeholder="Enter Title Of Product" required>
-        <input type="number" name="expense_amount" id="editAmount" placeholder="Enter Cost Of Product" required>
-        <button class="submit" type="submit" name="edit_expense">Save Changes</button>
-    </form>
-</div>
+<?php if ($editingExpense): ?>
+    <div class="edit-form">
+        <h3>Edit Expense</h3>
+        <form method="post" action="">
+            <input type="hidden" name="index" value="<?php echo htmlspecialchars($editIndex); ?>">
+            <input type="text" name="expense_title" value="<?php echo htmlspecialchars($editingExpense['title']); ?>" placeholder="Enter Title Of Product" required>
+            <input type="number" name="expense_amount" value="<?php echo htmlspecialchars($editingExpense['amount']); ?>" placeholder="Enter Cost Of Product" required>
+            <button class="submit" type="submit" name="edit_expense">Save Changes</button>
+        </form>
+    </div>
+<?php endif; ?>
 
 <div class="download-pdf">
     <a href="generate_pdf.php" target="_blank" class="download-button">Download PDF</a>
 </div>
 
-<script>
-    function editExpense(index) {
-        // Show the edit form
-        document.getElementById('editExpenseForm').style.display = 'block';
-
-        // Populate the form with the existing data
-        let expenseTitle = document.querySelectorAll('.sublist-content .product')[index].innerText;
-        let expenseAmount = document.querySelectorAll('.sublist-content .amount')[index].innerText;
-
-        document.getElementById('editIndex').value = index;
-        document.getElementById('editTitle').value = expenseTitle;
-        document.getElementById('editAmount').value = expenseAmount;
-    }
-</script>
-
 <style>
     .edit-form {
-        display: none;
+        display: block;
         position: fixed;
         top: 50%;
         left: 50%;
@@ -194,5 +179,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </style>
 
 </body>
-
 </html>

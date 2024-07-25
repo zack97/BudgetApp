@@ -1,72 +1,90 @@
 <?php
 require('fpdf/fpdf.php');
+
+// Start session to access session variables
 session_start();
 
 class PDF extends FPDF
 {
-    // Page header
     function Header()
     {
-        // Arial bold 15
-        $this->SetFont('Arial', 'B', 15);
-        // Title
-        $this->Cell(0, 10, 'Budget Report', 0, 1, 'C');
-        // Line break
-        $this->Ln(10);
+        // Logo path
+        $logoPath = 'images/logo.png';  // Adjust this path if necessary
+
+        // Add the logo
+        $this->Image($logoPath, 10, 10, 10, 10); // X, Y, Width, Height in mm
+
+        // Add the text next to the logo
+        $this->SetFont('Arial', 'B', 12);
+        $this->SetXY(20, 10); // Adjust X position to be right of the logo
+        $this->Cell(0, 10, 'ZackProg', 0, 1, 'L');
+
+        // Add a title
+        $this->Ln(20); // Line break after header
+        $this->Cell(0, 10, 'Expense Report', 0, 1, 'C');
     }
 
-    // Page footer
     function Footer()
     {
-        // Position at 1.5 cm from bottom
         $this->SetY(-15);
-        // Arial italic 8
         $this->SetFont('Arial', 'I', 8);
-        // Page number
-        $this->Cell(0, 10, 'Page '.$this->PageNo().'/{nb}', 0, 0, 'C');
+        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
     }
 
-    // Load data
-    function LoadData($data)
+    function ChapterTitle($num, $label)
     {
-        return $data;
+        // Arial 12
+        $this->SetFont('Arial', 'B', 12);
+        // Background color
+        $this->SetFillColor(200, 220, 255);
+        // Title
+        $this->Cell(0, 10, 'Chapter ' . $num . ' : ' . $label, 0, 1, 'L', true);
+        // Line break
+        $this->Ln(4);
     }
 
-    // Simple table
-    function BasicTable($header, $data)
+    function ChapterBody($body)
     {
-        // Header
-        foreach($header as $col)
-            $this->Cell(40, 7, $col, 1);
+        // Read text file
+        $this->SetFont('Arial', '', 12);
+        // Output justified text
+        $this->MultiCell(0, 10, $body);
+        // Line break
         $this->Ln();
-        // Data
-        foreach($data as $row)
-        {
-            foreach($row as $col)
-                $this->Cell(40, 6, $col, 1);
-            $this->Ln();
-        }
     }
 }
 
+// Create instance of FPDF class
 $pdf = new PDF();
-$pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 12);
 
-// Column headings
-$header = array('Title', 'Amount');
-// Data loading
-$data = [];
-foreach ($_SESSION['expenses'] as $expense) {
-    $data[] = [$expense['title'], $expense['amount']];
+// Check if session data is set
+if (isset($_SESSION['total_amount'], $_SESSION['expenditure_value'], $_SESSION['balance_amount'], $_SESSION['expenses'])) {
+    // Add budget and expenses
+    $pdf->Cell(0, 10, 'Total Budget: ' . $_SESSION['total_amount'], 0, 1);
+    $pdf->Cell(0, 10, 'Expenditure Value: ' . $_SESSION['expenditure_value'], 0, 1);
+    $pdf->Cell(0, 10, 'Balance Amount: ' . $_SESSION['balance_amount'], 0, 1);
+    $pdf->Ln(10); // Line break
+
+    // Set up table for expenses
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(90, 10, 'Title', 1);
+    $pdf->Cell(0, 10, 'Amount', 1, 1, 'C');
+
+    // Set font for table data
+    $pdf->SetFont('Arial', '', 12);
+
+    // Add each expense to the table
+    foreach ($_SESSION['expenses'] as $expense) {
+        $pdf->Cell(90, 10, $expense['title'], 1);
+        $pdf->Cell(0, 10, $expense['amount'], 1, 1, 'C');
+    }
+} else {
+    // Handle case where session data is not available
+    $pdf->Cell(0, 10, 'No data available to generate the report.', 0, 1);
 }
 
-$pdf->Cell(0, 10, 'Total Budget: ' . $_SESSION['total_amount'], 0, 1);
-$pdf->Cell(0, 10, 'Total Expenses: ' . $_SESSION['expenditure_value'], 0, 1);
-$pdf->Cell(0, 10, 'Balance: ' . $_SESSION['balance_amount'], 0, 1);
-$pdf->Ln(10);
-
-$pdf->BasicTable($header, $data);
+// Output PDF
 $pdf->Output();
 ?>
