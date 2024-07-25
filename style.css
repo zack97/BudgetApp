@@ -9,12 +9,12 @@
 
 body {
   background-color: #f7f9fd;
+  font-size: 16px;
 }
 
 .wrapper {
   width: 90%;
-  font-size: 16px;
-  max-width: 43.753m;
+  max-width: 1200px;
   margin: 1em auto;
 }
 
@@ -117,6 +117,7 @@ body {
   padding: 0.5em 1em;
   display: grid;
   grid-template-columns: 3fr 2fr 1fr 1fr;
+  align-items: center;
 }
 
 .product {
@@ -130,13 +131,9 @@ body {
 }
 
 .icons-container {
-  width: 5em;
-  margin: 1.2em;
+  display: flex;
+  gap: 0.5em; /* Added gap for spacing */
   align-items: center;
-}
-
-.product-title {
-  margin-bottom: 1em;
 }
 
 .hide {
@@ -147,17 +144,18 @@ body {
   color: #ff465a;
 }
 
-.edit {
-  margin-left: auto;
-}
-
 .edit,
 .delete {
   background: transparent;
   cursor: pointer;
-  margin-right: 1.5em;
   border: none;
   color: #587ef4;
+  font-size: 1em; /* Adjusted font size */
+  margin-left: 0.5em; /* Adjusted spacing */
+}
+
+.edit {
+  margin-left: auto;
 }
 
 @media screen and (max-width: 600px) {
@@ -168,5 +166,9 @@ body {
   .sub-container {
     grid-template-columns: 1fr;
     gap: 1em;
+  }
+
+  .sublist-content {
+    grid-template-columns: 2fr 2fr 1fr;
   }
 }
