@@ -179,10 +179,12 @@ $editingExpense = isset($editIndex) ? $_SESSION['expenses'][$editIndex] : null;
 <?php endif; ?>
 
 <div class="download-pdf">
-    <a href="generate_pdf.php" target="_blank" class="download-button">Download PDF</a>
-    <form method="post" action="" style="margin-top: 1em;">
-        <button class="download-button" type="submit" name="export_csv">Export CSV</button>
-    </form>
+    <div>
+        <a href="generate_pdf.php" target="_blank" class="download-button">Download PDF</a>
+        <form method="post" action="" style="margin-top: 1em;">
+            <button class="download-button" type="submit" name="export_csv">Export CSV</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

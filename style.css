@@ -26,7 +26,7 @@ body {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3em;
+  gap: 2em;
 }
 
 .flex {
@@ -49,7 +49,7 @@ body {
 .container input {
   display: block;
   width: 100%;
-  padding: 0.6em 0.3em;
+  padding: 0.6em 0.8em;
   border: 1px solid #d0d0d0;
   border-radius: 0.3em;
   color: #414a67;
@@ -63,11 +63,44 @@ body {
 }
 
 .total-amount-container,
-.user-amount-container {
+.user-amount-container,
+.list,
+.download-pdf,
+.export-csv {
   background: #fff;
-  padding: 1.25em 0.9em;
-  border-radius: 0.3em;
+  padding: 1.25em 1.5em;
+  border-radius: 0.6em;
   box-shadow: 0 0.6em 1.2em rgba(28, 0, 80, 0.06);
+}
+
+.download-pdf div {
+  background-color: #587ef4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  button,
+  a {
+    border: none;
+    background-color: #e5e5e5;
+    color: #007bff;
+    cursor: pointer;
+  }
+}
+
+.download-pdf div form {
+  padding-bottom: 0.8rem;
+}
+
+.total-amount-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-amount-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .edit-form {
@@ -77,36 +110,42 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 20px;
+  padding: 2em;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0.6em;
 }
-.download-pdf {
+
+.download-pdf,
+.export-csv {
   text-align: center;
-  margin-top: 20px;
 }
-.download-button {
+
+.download-button,
+.export-button {
   display: inline-block;
   padding: 10px 20px;
   background: #007bff;
   color: white;
   text-decoration: none;
   border-radius: 5px;
+  margin-top: 1em;
 }
 
 .output-container {
   background-color: #587ef4;
   color: #fff;
-  border-radius: 0.3em;
+  border-radius: 0.6em;
   box-shadow: 0 0.6em 1.2em rgba(28, 0, 80, 0.06);
-  margin: 2em 0;
-  padding: 1.2em;
+  margin-bottom: 1.5em;
+  padding: 1.5em;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .output-container p {
   font-weight: 500;
-  margin-bottom: 0.6em;
+  margin-bottom: 0.4em;
 }
 
 .output-container span {
@@ -118,21 +157,18 @@ body {
 
 .submit {
   font-size: 1em;
-  margin-top: 0.8em;
   background-color: #587ef4;
   border: none;
-  outline: none;
   color: #fff;
   padding: 0.6em 1.2em;
   border-radius: 0.3em;
   cursor: pointer;
+  margin-top: 0.8em;
 }
 
-.list {
-  background-color: #fff;
-  padding: 1.8em 1.2em;
-  box-shadow: 0 0.6em 1.2em rgba(28, 0, 80, 0.06);
-  border-radius: 0.6em;
+.list-container {
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .sublist-content {
@@ -141,8 +177,9 @@ body {
   margin-bottom: 0.6em;
   padding: 0.5em 1em;
   display: grid;
-  grid-template-columns: 3fr 2fr 1fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr 1fr;
   align-items: center;
+  background: #f9f9f9;
 }
 
 .product {
@@ -150,14 +187,14 @@ body {
   color: #363d55;
 }
 
-.amount {
+.amount,
+.date {
   color: #414a67;
-  margin-left: 20%;
 }
 
 .icons-container {
   display: flex;
-  gap: 0.5em; /* Added gap for spacing */
+  gap: 0.5em;
   align-items: center;
 }
 
@@ -167,16 +204,18 @@ body {
 
 .error {
   color: #ff465a;
+  font-size: 0.875em;
 }
 
 .edit,
-.delete {
+.delete,
+.view-details {
   background: transparent;
   cursor: pointer;
   border: none;
   color: #587ef4;
-  font-size: 1em; /* Adjusted font size */
-  margin-left: 0.5em; /* Adjusted spacing */
+  font-size: 1em;
+  margin-left: 0.5em;
 }
 
 .edit {
@@ -194,6 +233,6 @@ body {
   }
 
   .sublist-content {
-    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
   }
 }
