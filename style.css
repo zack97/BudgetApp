@@ -70,6 +70,29 @@ body {
   box-shadow: 0 0.6em 1.2em rgba(28, 0, 80, 0.06);
 }
 
+.edit-form {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.download-pdf {
+  text-align: center;
+  margin-top: 20px;
+}
+.download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
 .output-container {
   background-color: #587ef4;
   color: #fff;
