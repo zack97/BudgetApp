@@ -83,3 +83,128 @@ echo "Decoded Students Array:\n";
 print_r($studentsArray);
 
 ?>
+
+
+<?php
+// Learn PHP Step by Step
+
+// Section 1: Introduction to PHP
+echo "<h2>1. Introduction to PHP</h2>";
+echo "<p>PHP is a popular server-side scripting language designed for web development. It can be embedded into HTML and is widely used to create dynamic web pages.</p>";
+
+// Section 2: PHP Syntax and Variables
+echo "<h2>2. PHP Syntax and Variables</h2>";
+$greeting = "Hello, World!";
+echo $greeting . "<br>";
+
+// Section 3: PHP Control Structures
+echo "<h2>3. PHP Control Structures</h2>";
+$number = 10;
+if ($number > 0) {
+    echo "Positive number<br>";
+} else {
+    echo "Negative number<br>";
+}
+
+for ($i = 0; $i < 5; $i++) {
+    echo $i . "<br>";
+}
+
+switch ($number) {
+    case 10:
+        echo "Ten<br>";
+        break;
+    default:
+        echo "Not ten<br>";
+}
+
+// Section 4: PHP Functions
+echo "<h2>4. PHP Functions</h2>";
+function add($a, $b) {
+    return $a + $b;
+}
+
+$result = add(3, 4);
+echo $result . "<br>"; // Outputs: 7
+
+// Section 5: PHP Forms and User Input
+echo "<h2>5. PHP Forms and User Input</h2>";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = htmlspecialchars($_POST["name"]);
+    echo "<p>Hello, $name!</p>";
+}
+?>
+<form method="post" action="">
+    <input type="text" name="name" placeholder="Enter your name">
+    <input type="submit" value="Submit">
+</form>
+<?php
+
+// Section 6: PHP Sessions
+echo "<h2>6. PHP Sessions</h2>";
+session_start();
+$_SESSION["user"] = "John Doe";
+echo "User is " . $_SESSION["user"] . "<br>";
+session_unset();
+session_destroy();
+
+// Section 7: PHP and MySQL
+echo "<h2>7. PHP and MySQL</h2>";
+$servername = "localhost";
+$username = "username";
+$password = "password";
+$dbname = "database";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT id, name FROM users";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        echo "id: " . $row["id"]. " - Name: " . $row["name"]. "<br>";
+    }
+} else {
+    echo "0 results<br>";
+}
+$conn->close();
+
+// Section 8: PHP Include and Require
+echo "<h2>8. PHP Include and Require</h2>";
+include "header.php";
+require "config.php";
+
+// Section 9: PHP Error Handling
+echo "<h2>9. PHP Error Handling</h2>";
+function customError($errno, $errstr) {
+    echo "Error: [$errno] $errstr<br>";
+}
+
+set_error_handler("customError");
+
+echo $test;
+
+try {
+    if(!file_exists("test.txt")) {
+        throw new Exception("File not found");
+    }
+} catch (Exception $e) {
+    echo "Message: " . $e->getMessage() . "<br>";
+}
+
+// Section 10: PHP File Handling
+echo "<h2>10. PHP File Handling</h2>";
+$file = fopen("test.txt", "r") or die("Unable to open file!");
+echo fread($file, filesize("test.txt")) . "<br>";
+fclose($file);
+
+$file = fopen("test.txt", "w") or die("Unable to open file!");
+$txt = "Hello, World!";
+fwrite($file, $txt);
+fclose($file);
+?>
+
