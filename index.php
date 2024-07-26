@@ -118,7 +118,7 @@ $editingExpense = isset($editIndex) ? $_SESSION['expenses'][$editIndex] : null;
                 <form method="post" action="">
                     <input type="text" name="expense_title" placeholder="Enter Title Of Product" required>
                     <input type="number" name="expense_amount" placeholder="Enter Cost Of Product" required>
-                    <input type="date" name="expense_date" placeholder="Enter Date Of Expense" required> <!-- New date input -->
+                   <!-- <input type="date" name="expense_date" placeholder="Enter Date Of Expense" required> --><!-- New date input -->
                     <button class="submit" type="submit" name="add_expense">Add Expense</button>
                 </form>
             </div>
