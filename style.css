@@ -177,7 +177,7 @@ body {
   margin-bottom: 0.6em;
   padding: 0.5em 1em;
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1fr;
+  grid-template-columns: 3fr 2fr 1fr;
   align-items: center;
   background: #f9f9f9;
 }
@@ -194,7 +194,7 @@ body {
 
 .icons-container {
   display: flex;
-  gap: 0.5em;
+  gap: 30px;
   align-items: center;
 }
 
@@ -212,7 +212,9 @@ body {
 .view-details {
   background: transparent;
   cursor: pointer;
-  border: none;
+  border: 1px solid #587ef4;
+  border-radius: 5px;
+  padding: 5px;
   color: #587ef4;
   font-size: 1em;
   margin-left: 0.5em;

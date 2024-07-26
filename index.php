@@ -7,7 +7,6 @@ if (!isset($_SESSION['total_amount'])) {
     $_SESSION['expenditure_value'] = 0;
     $_SESSION['balance_amount'] = 0;
     $_SESSION['expenses'] = [];
-    $_SESSION['expenses_date'] = []; // Additional data to track expense dates
 }
 
 // Handle form submissions
@@ -19,19 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['expenditure_value'] = 0;
             $_SESSION['balance_amount'] = $totalAmount;
             $_SESSION['expenses'] = [];
-            $_SESSION['expenses_date'] = [];
         } else {
             $budgetError = 'Value cannot be empty or negative';
         }
     } elseif (isset($_POST['add_expense'])) {
         $expenseTitle = $_POST['expense_title'];
         $expenseAmount = $_POST['expense_amount'];
-        $expenseDate = $_POST['expense_date']; // New date field
-        if ($expenseTitle != '' && $expenseAmount >= 0 && $expenseDate != '') {
+        if ($expenseTitle != '' && $expenseAmount >= 0) {
             $_SESSION['expenditure_value'] += $expenseAmount;
             $_SESSION['balance_amount'] = $_SESSION['total_amount'] - $_SESSION['expenditure_value'];
             $_SESSION['expenses'][] = ['title' => $expenseTitle, 'amount' => $expenseAmount];
-            $_SESSION['expenses_date'][] = $expenseDate;
         } else {
             $expenseError = 'Values cannot be empty';
         }
@@ -57,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['balance_amount'] = $_SESSION['total_amount'] - $_SESSION['expenditure_value'];
 
             array_splice($_SESSION['expenses'], $index, 1);
-            array_splice($_SESSION['expenses_date'], $index, 1); // Also remove date
         }
     } elseif (isset($_POST['edit_index'])) {
         $editIndex = $_POST['edit_index'];
@@ -67,15 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['expenditure_value'] = 0;
         $_SESSION['balance_amount'] = 0;
         $_SESSION['expenses'] = [];
-        $_SESSION['expenses_date'] = [];
     } elseif (isset($_POST['export_csv'])) {
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment;filename="expenses.csv"');
 
         $output = fopen('php://output', 'w');
-        fputcsv($output, ['Title', 'Amount', 'Date']); // CSV headers
+        fputcsv($output, ['Title', 'Amount']); // CSV headers
         foreach ($_SESSION['expenses'] as $index => $expense) {
-            fputcsv($output, [$expense['title'], $expense['amount'], $_SESSION['expenses_date'][$index]]);
+            fputcsv($output, [$expense['title'], $expense['amount']]);
         }
         fclose($output);
         exit();
@@ -86,7 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $editingExpense = isset($editIndex) ? $_SESSION['expenses'][$editIndex] : null;
 ?>
 
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget App | PHP Version</title>
@@ -118,7 +113,6 @@ $editingExpense = isset($editIndex) ? $_SESSION['expenses'][$editIndex] : null;
                 <form method="post" action="">
                     <input type="text" name="expense_title" placeholder="Enter Title Of Product" required>
                     <input type="number" name="expense_amount" placeholder="Enter Cost Of Product" required>
-                    <input type="date" name="expense_date" placeholder="Enter Date Of Expense" required> <!-- New date input -->
                     <button class="submit" type="submit" name="add_expense">Add Expense</button>
                 </form>
             </div>
@@ -147,7 +141,6 @@ $editingExpense = isset($editIndex) ? $_SESSION['expenses'][$editIndex] : null;
                 <div class="sublist-content flex-space">
                     <p class="product"><?php echo htmlspecialchars($expense['title']); ?></p>
                     <p class="amount"><?php echo htmlspecialchars($expense['amount']); ?></p>
-                    <p class="date"><?php echo htmlspecialchars($_SESSION['expenses_date'][$index]); ?></p> <!-- Display the date -->
                     <div class="icons-container">
                         <form method="post" action="" style="display:inline;">
                             <input type="hidden" name="index" value="<?php echo htmlspecialchars($index); ?>">
